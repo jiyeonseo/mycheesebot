@@ -11,7 +11,7 @@ const { UserProfile } = require('./userProfile');
 
 // Minimum length requirements for city and name
 const CITY_LENGTH_MIN = 5;
-const NAME_LENGTH_MIN = 3;
+const NAME_LENGTH_MIN = 2;
 
 // Dialog IDs 
 const PROFILE_DIALOG = 'profileDialog';
@@ -53,7 +53,7 @@ class Greeting extends ComponentDialog {
 
         // Add text prompts for name and city
         this.addDialog(new TextPrompt(NAME_PROMPT, this.validateName));
-        this.addDialog(new TextPrompt(CITY_PROMPT, this.validateCity));
+        // this.addDialog(new TextPrompt(CITY_PROMPT, this.validateCity));
 
         // Save off our state accessor for later use
         this.userProfileAccessor = userProfileAccessor;
@@ -93,7 +93,7 @@ class Greeting extends ComponentDialog {
         }
         if (!userProfile.name) {
             // prompt for name, if missing
-            return await step.prompt(NAME_PROMPT, 'What is your name?');
+            return await step.prompt(NAME_PROMPT, '이름이 뭐에요??');
         } else {
             return await step.next();
         }
@@ -116,7 +116,7 @@ class Greeting extends ComponentDialog {
             await this.userProfileAccessor.set(step.context, userProfile);
         }
         if (!userProfile.city) {
-            return await step.prompt(CITY_PROMPT, `Hello ${ userProfile.name }, what city do you live in?`);
+            return await step.prompt(CITY_PROMPT, `안녕하세요. ${ userProfile.name }! 어디 살아요? `);
         } else {
             return await step.next();
         }
@@ -150,7 +150,7 @@ class Greeting extends ComponentDialog {
         if (value.length >= NAME_LENGTH_MIN) {
             return VALIDATION_SUCCEEDED;
         } else {
-            await validatorContext.context.sendActivity(`Names need to be at least ${ NAME_LENGTH_MIN } characters long.`);
+            await validatorContext.context.sendActivity(`이름이 너무 짧은데요?  ${ NAME_LENGTH_MIN }자 이상 넣어주세요.`);
             return VALIDATION_FAILED;
         }
     }
