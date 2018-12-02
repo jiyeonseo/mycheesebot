@@ -43,6 +43,7 @@
 - {userName=vishwac} is my name
 - you can assume i live in {userLocation=cairo}
 - you can call me {userName=steve}
+- my phone number is {userPhone=01001011234}
 
 > Add patterns with pattern.any entitiy
 - some people call me {userName_patternAny}

@@ -31,6 +31,7 @@ const NONE_INTENT = 'None';
 // Supported LUIS Entities, defined in ./dialogs/greeting/resources/greeting.lu
 const USER_NAME_ENTITIES = ['userName', 'userName_patternAny'];
 const USER_LOCATION_ENTITIES = ['userLocation', 'userLocation_patternAny'];
+const USER_PHONE_ENTITIES = ['userPhone', 'userPhone_patternAny'];
 
 /**
  * Demonstrates the following concepts:
@@ -68,16 +69,15 @@ class BasicBot {
             // CAUTION: Its better to assign and use a subscription key instead of authoring key here.
             endpointKey: luisConfig.authoringKey
         });
-
+        
         // Create the property accessors for user and conversation state
         this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY);
         this.dialogState = conversationState.createProperty(DIALOG_STATE_PROPERTY);
-
         // Create top-level dialog(s)
         this.dialogs = new DialogSet(this.dialogState);
         // Add the Greeting dialog to the set
         this.dialogs.add(new GreetingDialog(GREETING_DIALOG, this.userProfileAccessor));
-
+        
         this.conversationState = conversationState;
         this.userState = userState;
     }
@@ -92,6 +92,7 @@ class BasicBot {
      * @param {Context} context turn context from the adapter
      */
     async onTurn(context) {
+        
         // Handle Message activity type, which is the main activity type for shown within a conversational interface
         // Message activities may contain text, speech, interactive cards, and binary or unknown attachments.
         // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
@@ -192,7 +193,7 @@ class BasicBot {
      */
     async isTurnInterrupted(dc, luisResults) {
         const topIntent = LuisRecognizer.topIntent(luisResults);
-
+        
         // see if there are anh conversation interrupts we need to handle
         if (topIntent === CANCEL_INTENT) {
             if (dc.activeDialog) {
@@ -224,6 +225,7 @@ class BasicBot {
         if (Object.keys(luisResult.entities).length !== 1) {
             // get userProfile object using the accessor
             let userProfile = await this.userProfileAccessor.get(context);
+            
             if (userProfile === undefined) {
                 userProfile = new UserProfile();
             }
@@ -242,7 +244,7 @@ class BasicBot {
                     userProfile.city = lowerCaseCity.charAt(0).toUpperCase() + lowerCaseCity.substr(1);
                 }
             });
-            USER_LOCATION_ENTITIES.forEach(phone => {
+            USER_PHONE_ENTITIES.forEach(phone => {
                 if (luisResult.entities[phone] !== undefined) {
                     let lowerCasePhone = luisResult.entities[phone][0];
                     // capitalize and set user name

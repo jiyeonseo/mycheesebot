@@ -37,11 +37,11 @@ const VALIDATION_FAILED = !VALIDATION_SUCCEEDED;
 class Greeting extends ComponentDialog {
     constructor(dialogId, userProfileAccessor) {
         super(dialogId);
-
+        
         // validate what was passed in
         if (!dialogId) throw ('Missing parameter.  dialogId is required');
         if (!userProfileAccessor) throw ('Missing parameter.  userProfileAccessor is required');
-
+        
         // Add a water fall dialog with 4 steps.
         // The order of step function registration is importent
         // as a water fall dialog executes steps registered in order
@@ -55,7 +55,8 @@ class Greeting extends ComponentDialog {
 
         // Add text prompts for name and city
         this.addDialog(new TextPrompt(NAME_PROMPT, this.validateName));
-        // this.addDialog(new TextPrompt(CITY_PROMPT, this.validateCity));
+        this.addDialog(new TextPrompt(CITY_PROMPT, this.validateCity));
+        this.addDialog(new TextPrompt(PHONE_PROMPT, this.validatePhone));
 
         // Save off our state accessor for later use
         this.userProfileAccessor = userProfileAccessor;
@@ -90,7 +91,7 @@ class Greeting extends ComponentDialog {
     async promptForNameStep(step) {
         const userProfile = await this.userProfileAccessor.get(step.context);
         // if we have everything we need, greet user and return
-        if (userProfile !== undefined && userProfile.name !== undefined && userProfile.city !== undefined && userProfile.phone !== undefined ) {
+        if (userProfile !== undefined && userProfile.name !== undefined && userProfile.city !== undefined && userProfile.phone !== undefined) {
             return await this.greetUser(step);
         }
         if (!userProfile.name) {
@@ -118,14 +119,20 @@ class Greeting extends ComponentDialog {
             await this.userProfileAccessor.set(step.context, userProfile);
         }
         if (!userProfile.city) {
-            return await step.prompt(CITY_PROMPT, `안녕하세요. ${ userProfile.name }! 어디 살아요? `);
+            return await step.prompt(CITY_PROMPT, `안녕하세요. ${userProfile.name}! 어디 살아요? `);
         } else {
             return await step.next();
         }
     }
     async promptForPhoneStep(step) {
         const userProfile = await this.userProfileAccessor.get(step.context);
-        
+
+        if (userProfile.city === undefined && step.result) {
+            let lowerCaseCity = step.result;
+            // capitalize and set city
+            userProfile.city = lowerCaseCity.charAt(0).toUpperCase() + lowerCaseCity.substr(1);
+            await this.userProfileAccessor.set(step.context, userProfile);
+        }
         if (!userProfile.phone) {
             return await step.prompt(PHONE_PROMPT, '번호가 뭐에요??');
         } else {
@@ -142,10 +149,10 @@ class Greeting extends ComponentDialog {
     async displayGreetingStep(step) {
         // Save city, if prompted for
         const userProfile = await this.userProfileAccessor.get(step.context);
-        if (userProfile.city === undefined && step.result) {
-            let lowerCaseCity = step.result;
+        if (userProfile.phone === undefined && step.result) {
+            let lowerCasePhone = step.result;
             // capitalize and set city
-            userProfile.city = lowerCaseCity.charAt(0).toUpperCase() + lowerCaseCity.substr(1);
+            userProfile.phone = lowerCasePhone.charAt(0).toUpperCase() + lowerCasePhone.substr(1);
             await this.userProfileAccessor.set(step.context, userProfile);
         }
         return await this.greetUser(step);
@@ -161,7 +168,7 @@ class Greeting extends ComponentDialog {
         if (value.length >= NAME_LENGTH_MIN) {
             return VALIDATION_SUCCEEDED;
         } else {
-            await validatorContext.context.sendActivity(`이름이 너무 짧은데요?  ${ NAME_LENGTH_MIN }자 이상 넣어주세요.`);
+            await validatorContext.context.sendActivity(`이름이 너무 짧은데요?  ${NAME_LENGTH_MIN}자 이상 넣어주세요.`);
             return VALIDATION_FAILED;
         }
     }
@@ -171,14 +178,10 @@ class Greeting extends ComponentDialog {
      * @param {PromptValidatorContext} validation context for this validator.
      */
     async validateCity(validatorContext) {
-        // Validate that the user entered a minimum length for their name
-        const value = (validatorContext.recognized.value || '').trim();
-        if (value.length >= CITY_LENGTH_MIN) {
             return VALIDATION_SUCCEEDED;
-        } else {
-            await validatorContext.context.sendActivity(`City names needs to be at least ${ CITY_LENGTH_MIN } characters long.`);
-            return VALIDATION_FAILED;
-        }
+    }
+    async validatePhone(validatorContext) {
+        return VALIDATION_SUCCEEDED;
     }
     /**
      * Helper function to greet user with information in greetingState.
@@ -188,8 +191,8 @@ class Greeting extends ComponentDialog {
     async greetUser(step) {
         const userProfile = await this.userProfileAccessor.get(step.context);
         // Display to the user their profile information and end dialog
-        await step.context.sendActivity(`Hi ${ userProfile.name }, from ${ userProfile.city }, nice to meet you!`);
-        await step.context.sendActivity(`You can always say 'My name is <your name> to reintroduce yourself to me.`);
+        await step.context.sendActivity(`안녕. ${userProfile.name}, ${userProfile.city}사는군요. 나도 거기 사는데! 전화해도 되죠? ${userProfile.phone}`);
+        // await step.context.sendActivity(`You can always say 'My name is <your name> to reintroduce yourself to me.`);
         return await step.endDialog();
     }
 }
