@@ -19,6 +19,7 @@ const PROFILE_DIALOG = 'profileDialog';
 // Prompt IDs
 const NAME_PROMPT = 'namePrompt';
 const CITY_PROMPT = 'cityPrompt';
+const PHONE_PROMPT = 'phonePrompt';
 
 const VALIDATION_SUCCEEDED = true;
 const VALIDATION_FAILED = !VALIDATION_SUCCEEDED;
@@ -48,6 +49,7 @@ class Greeting extends ComponentDialog {
             this.initializeStateStep.bind(this),
             this.promptForNameStep.bind(this),
             this.promptForCityStep.bind(this),
+            this.promptForPhoneStep.bind(this),
             this.displayGreetingStep.bind(this)
         ]));
 
@@ -88,7 +90,7 @@ class Greeting extends ComponentDialog {
     async promptForNameStep(step) {
         const userProfile = await this.userProfileAccessor.get(step.context);
         // if we have everything we need, greet user and return
-        if (userProfile !== undefined && userProfile.name !== undefined && userProfile.city !== undefined) {
+        if (userProfile !== undefined && userProfile.name !== undefined && userProfile.city !== undefined && userProfile.phone !== undefined ) {
             return await this.greetUser(step);
         }
         if (!userProfile.name) {
@@ -117,6 +119,15 @@ class Greeting extends ComponentDialog {
         }
         if (!userProfile.city) {
             return await step.prompt(CITY_PROMPT, `안녕하세요. ${ userProfile.name }! 어디 살아요? `);
+        } else {
+            return await step.next();
+        }
+    }
+    async promptForPhoneStep(step) {
+        const userProfile = await this.userProfileAccessor.get(step.context);
+        
+        if (!userProfile.phone) {
+            return await step.prompt(PHONE_PROMPT, '번호가 뭐에요??');
         } else {
             return await step.next();
         }

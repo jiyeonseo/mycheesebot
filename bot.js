@@ -242,6 +242,13 @@ class BasicBot {
                     userProfile.city = lowerCaseCity.charAt(0).toUpperCase() + lowerCaseCity.substr(1);
                 }
             });
+            USER_LOCATION_ENTITIES.forEach(phone => {
+                if (luisResult.entities[phone] !== undefined) {
+                    let lowerCasePhone = luisResult.entities[phone][0];
+                    // capitalize and set user name
+                    userProfile.phone = lowerCasePhone.charAt(0).toUpperCase() + lowerCasePhone.substr(1);
+                }
+            });
             // set the new values
             await this.userProfileAccessor.set(context, userProfile);
         }

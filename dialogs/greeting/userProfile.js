@@ -8,6 +8,7 @@ class UserProfile {
     constructor(name, city) {
         this.name = name || undefined;
         this.city = city || undefined;
+        this.phone = phone || undefined;
     }
 };
 

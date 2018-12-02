@@ -5,7 +5,7 @@
   "body": [
     {
       "type": "Image",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+      "url": "https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-1/27066957_207141499848332_5974059704474063311_n.png?_nc_cat=108&_nc_log=1&_nc_oc=AWOH_nAqkMqzOR9IYhuBRhWtcqNlVaJmWwJEK83QuR1T-cfJCBeXvpTzyFKhzA&_nc_ht=scontent-icn1-1.xx&oh=973b180de409f0948da9dd99e53368e6&oe=5C6CA72E",
       "size": "stretch"
     },
     {
@@ -13,7 +13,7 @@
       "spacing": "medium",
       "size": "default",
       "weight": "bolder",
-      "text": "Welcome to Bot Framework!",
+      "text": "This is Cheese's cheese pizza cheese",
       "wrap": true,
       "maxLines": 0
     },
@@ -21,7 +21,7 @@
       "type": "TextBlock",
       "size": "default",
       "isSubtle": "yes",
-      "text": "Now that you have successfully run your bot, follow the links in this Adaptive Card to expand your knowledge of Bot Framework.",
+      "text": "This is sample bot by cheese for the test page. Cheese's cheese pizza cheese. Welcome!",
       "wrap": true,
       "maxLines": 0
     }
@@ -29,18 +29,18 @@
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "Get an overview",
-      "url": "https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0"
+      "title": "Get the page ",
+      "url": "https://www.facebook.com/Cheeses-Cheese-Pizza-Cheese-207141366515012"
     },
     {
       "type": "Action.OpenUrl",
-      "title": "Ask a question",
-      "url": "https://stackoverflow.com/questions/tagged/botframework"
+      "title": "Go to Facebook",
+      "url": "https://www.facebook.com"
     },
     {
       "type": "Action.OpenUrl",
-      "title": "Learn how to deploy",
-      "url": "https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-deploy-azure?view=azure-bot-service-4.0"
+      "title": "Go to Daum",
+      "url": "https://daum.net"
     }
   ]
 }
